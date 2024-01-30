@@ -10,6 +10,7 @@ LIBGPGERROR_VERSION=1.47
 LIBKSBA_VERSION=1.6.5
 NPTH_VERSION=1.6
 PINENTRY_VERSION=1.2.1
+PTH_VERSION=2.0.7
 
 DESTDIR=
 PREFIX="$PWD/gnupg"
@@ -49,6 +50,7 @@ $gnupgweb/libgpg-error/libgpg-error-$LIBGPGERROR_VERSION.tar.bz2
 $gnupgweb/libksba/libksba-$LIBKSBA_VERSION.tar.bz2
 $gnupgweb/npth/npth-$NPTH_VERSION.tar.bz2
 $gnupgweb/pinentry/pinentry-$PINENTRY_VERSION.tar.bz2
+https://ftp.gnu.org/gnu/pth/pth-$PTH_VERSION.tar.gz
 EOF
     )
 }
@@ -115,6 +117,20 @@ tar -C "$WORK" -xjf download/libgpg-error-$LIBGPGERROR_VERSION.tar.bz2
     make -kj$NJOBS
     make install
 )
+
+tar -C "$WORK" -xf download/pth-$PTH_VERSION.tar.gz
+(
+    mkdir -p "$WORK/pth"
+    cd "$WORK/pth"
+    ../pth-$PTH_VERSION/configure \
+        CC="$WORK/deps/bin/musl-gcc" \
+        --prefix="$WORK/deps" \
+        --enable-shared=no \
+        --enable-static=yes \
+    make -kj$NJOBS
+    make install
+)
+
 
 tar -C "$WORK" -xjf download/libassuan-$LIBASSUAN_VERSION.tar.bz2
 (
